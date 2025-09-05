@@ -14,7 +14,7 @@ export default function Index() {
     const isAuth = await SecureStoreService.isAuthenticated();
     // Se o usuario esta autenticado, manda pra home. Se nao, login.
     if (isAuth) {
-      // router.replace('/home');
+      router.replace('/home');
     } else {
       router.replace('/login' as any);
     }

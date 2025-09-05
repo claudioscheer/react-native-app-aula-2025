@@ -1,7 +1,39 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { SecureStoreService } from '@/utils/secureStore';
+import { router } from 'expo-router';
+import { useState } from 'react';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 
 export default function LoginScreen() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    async function handleLogin() {
+        if (!email.trim() || !password.trim()) {
+            Alert.alert('Campos obrigatorios', 'Email e senha sao obrigatorios');
+            return;
+        }
+
+        try {
+
+            // TODO
+            // no futuro, aqui deve ser chamado o servidor
+            // como nao temos servidor, criar dummy token
+
+            const dummyToken = `dummy_token_${Date.now()}`;
+            await SecureStoreService.storeToken(dummyToken);
+            
+            router.replace('/home');
+
+
+        } catch (error) {
+            if (error instanceof Error) {
+                Alert.alert('Erro login', error?.message);
+            }
+        }
+
+    }
+
     return (
         <View style={styles.container}>
 
@@ -9,26 +41,30 @@ export default function LoginScreen() {
                 <Text style={styles.title}>Login</Text>
                 <TextInput
                     label="Email"
+                    mode="outlined"
+                    value={email}
                     style={styles.input}
                     placeholder='Informe seu email'
                     autoCorrect={false}
                     keyboardType='email-address'
+                    onChangeText={setEmail}
                 />
 
                 <TextInput
                     label="Senha"
                     mode="outlined"
+                    value={password}
                     style={styles.input}
                     placeholder='Informe sua senha'
                     autoCorrect={false}
                     secureTextEntry
+                    onChangeText={(text) => setPassword(text)}
                 />
 
                 <Button
                     style={styles.button}
-                    icon="camera"
                     mode="contained"
-                    onPress={() => console.log('Pressed')}>
+                    onPress={() => handleLogin()}>
                     Login
                 </Button>
             </View>
