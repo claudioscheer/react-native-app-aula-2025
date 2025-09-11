@@ -11,6 +11,10 @@ export class SecureStoreService {
     return SecureStoreService.setItem(IS_AUTHENTICATED_KEY, token);
   }
 
+  static async removeToken(): Promise<void> {
+    await SecureStore.deleteItemAsync(IS_AUTHENTICATED_KEY);
+  }
+
   static async getStoreToken(): Promise<string> {
     const token = await SecureStoreService.getItem(IS_AUTHENTICATED_KEY);
     if (!token) {
