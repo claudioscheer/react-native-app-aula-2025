@@ -1,34 +1,13 @@
 import { SecureStoreService } from "@/utils/secureStore";
 import { router, Stack } from "expo-router";
 import { Alert } from "react-native";
-import { Button, PaperProvider } from 'react-native-paper';
+import { Button, PaperProvider } from "react-native-paper";
+import { StatusBar } from 'expo-status-bar';
 
 export default function RootLayout() {
-
-  async function logout() {
-    Alert.alert(
-      'Sair',
-      'Tem certeza que desejas sair?',
-      [
-        {
-          text: 'Não',
-          style: 'cancel'
-        },
-        {
-          text: 'Sim',
-          style: 'destructive',
-          onPress: async () => {
-            await SecureStoreService.removeToken();
-            router.replace('/login');
-          }
-        }
-      ]
-
-    )
-  }
-
   return (
     <PaperProvider>
+      <StatusBar style="auto" />
       <Stack>
         <Stack.Screen
           name="index"
@@ -46,17 +25,7 @@ export default function RootLayout() {
           name="home"
           options={{
             title: "Home",
-            headerRight: () => {
-              return (
-                <Button
-                  icon="logout"
-                  mode="text"
-                  onPress={() => logout()}>
-                  Sair
-                </Button>
-
-              );
-            }
+            headerShown: false,
           }}
         />
       </Stack>

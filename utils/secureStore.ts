@@ -1,6 +1,6 @@
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from "expo-secure-store";
 
-const IS_AUTHENTICATED_KEY = 'USER_TOKEN';
+const IS_AUTHENTICATED_KEY = "USER_TOKEN";
 
 export class SecureStoreService {
   static async isAuthenticated(): Promise<boolean> {
@@ -18,7 +18,7 @@ export class SecureStoreService {
   static async getStoreToken(): Promise<string> {
     const token = await SecureStoreService.getItem(IS_AUTHENTICATED_KEY);
     if (!token) {
-      throw Error('O token não existir neste ponto é uma violaçáo!');
+      throw Error("O token não existir neste ponto é uma violaçáo!");
     }
     return token;
   }
