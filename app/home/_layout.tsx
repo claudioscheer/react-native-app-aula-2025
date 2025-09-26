@@ -29,8 +29,8 @@ export default function Layout() {
         <Drawer.Screen
           name="index"
           options={{
-            drawerLabel: "Home",
-            title: "Home",
+            drawerLabel: "Posts",
+            title: "Posts",
             headerRight: () => {
               return (
                 <Button icon="logout" mode="text" onPress={() => logout()}>

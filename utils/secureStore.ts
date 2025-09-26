@@ -14,7 +14,7 @@ export class SecureStoreService {
     if (decoded.exp || 0 > dateNowSeconds) {
       return true;
     }
-    
+
     return false;
   }
 
