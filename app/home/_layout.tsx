@@ -29,7 +29,7 @@ export default function Layout() {
         <Drawer.Screen
           name="index"
           options={{
-            drawerLabel: 'Home',
+            drawerLabel: "Home",
             title: "Home",
             headerRight: () => {
               return (
@@ -44,8 +44,8 @@ export default function Layout() {
         <Drawer.Screen
           name="profile"
           options={{
-            title: 'Profile',
-            drawerLabel: 'Profile',
+            title: "Profile",
+            drawerLabel: "Profile",
           }}
         />
       </Drawer>

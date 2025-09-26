@@ -1,10 +1,21 @@
 import * as SecureStore from "expo-secure-store";
+import { jwtDecode } from "jwt-decode";
 
 const IS_AUTHENTICATED_KEY = "USER_TOKEN";
 
 export class SecureStoreService {
   static async isAuthenticated(): Promise<boolean> {
-    return !!(await SecureStoreService.getItem(IS_AUTHENTICATED_KEY));
+    const token = await SecureStoreService.getItem(IS_AUTHENTICATED_KEY);
+    if (!token) {
+      return false;
+    }
+    const decoded = jwtDecode(token);
+    const dateNowSeconds = Math.floor(Date.now() / 1000);
+    if (decoded.exp || 0 > dateNowSeconds) {
+      return true;
+    }
+    
+    return false;
   }
 
   static async storeToken(token: string): Promise<void> {

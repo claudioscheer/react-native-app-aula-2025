@@ -1,8 +1,10 @@
+import { LoginService } from "@/services/login";
 import { SecureStoreService } from "@/utils/secureStore";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -15,12 +17,13 @@ export default function LoginScreen() {
     }
 
     try {
-      // TODO
-      // no futuro, aqui deve ser chamado o servidor
-      // como nao temos servidor, criar dummy token
+      const loginService = new LoginService();
+      const login = await loginService.login(email, password);
 
-      const dummyToken = `dummy_token_${Date.now()}`;
-      await SecureStoreService.storeToken(dummyToken);
+      await SecureStoreService.storeToken(login.token);
+      await AsyncStorage.setItem("userId", login.user.id.toString());
+      await AsyncStorage.setItem("userName", login.user.name);
+      await AsyncStorage.setItem("userEmail", login.user.email);
 
       router.replace("/home" as any);
     } catch (error) {

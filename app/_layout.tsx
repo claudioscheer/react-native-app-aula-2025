@@ -2,7 +2,7 @@ import { SecureStoreService } from "@/utils/secureStore";
 import { router, Stack } from "expo-router";
 import { Alert } from "react-native";
 import { Button, PaperProvider } from "react-native-paper";
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar } from "expo-status-bar";
 
 export default function RootLayout() {
   return (

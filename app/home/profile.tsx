@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { RefreshControl, ScrollView, StyleSheet, Text } from "react-native";
 import { Button } from "react-native-paper";
 
-const API_URL = 'https://randomuser.me/api/';
+const API_URL = "https://randomuser.me/api/";
 type User = {
   results: {
     gender: string;
@@ -10,10 +10,10 @@ type User = {
       title: string;
       first: string;
       last: string;
-    },
+    };
     email: string;
   }[];
-}
+};
 
 export default function ProfileScreen() {
   const [user, setUser] = useState<null | User>(null);
@@ -30,19 +30,15 @@ export default function ProfileScreen() {
     const user: User = await response.json();
 
     setUser(user);
-    setLoading(false)
+    setLoading(false);
   }
 
   return (
     <ScrollView
       style={styles.container}
       refreshControl={
-        <RefreshControl
-          refreshing={loading}
-          onRefresh={fetchRandomUser}
-        />
+        <RefreshControl refreshing={loading} onRefresh={fetchRandomUser} />
       }
-
     >
       <Text style={styles.name}>{user?.results[0].name.first}</Text>
       <Text style={styles.name}>{user?.results[0].name.last}</Text>
@@ -59,4 +55,3 @@ const styles = StyleSheet.create({
     fontSize: 32,
   },
 });
-
