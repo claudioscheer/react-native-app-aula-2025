@@ -1,18 +1,22 @@
+import { SecureStoreService } from "@/utils/secureStore";
+
 const API_HOST = "http://138.94.76.170:8023";
 
-type PostsResponseType = {
-  posts: {
+export type Post = {
+  id: number;
+  title: string;
+  description: string;
+  imagePath: string;
+  authorId: number;
+  author: {
     id: number;
-    title: string;
-    description: string;
-    imagePath: string;
-    authorId: number;
-    author: {
-      id: number;
-      name: string;
-      email: string;
-    };
-  }[];
+    name: string;
+    email: string;
+  };
+};
+
+export type PostsResponseType = {
+  posts: Post[];
   pagination: {
     currentPage: number;
     totalPages: number;
@@ -27,7 +31,14 @@ export class PostsService {
     let url = `${API_HOST}/api/posts`;
     url += `?limit=${limit}&page=${page}`;
 
-    const request = await fetch(url);
+    const token = await SecureStoreService.getStoreToken();
+
+    const request = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     if (!request.ok) {
       throw new Error("Error fetching posts");
     }
