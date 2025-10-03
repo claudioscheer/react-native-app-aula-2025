@@ -8,10 +8,15 @@ export type InfiniteScrollProps<T> = {
 };
 
 export function InfiniteScroll<T>(props: InfiniteScrollProps<T>) {
-  const { data, renderItem, keyExtractor } = props;
+  const { data, renderItem, keyExtractor, onLoadMore } = props;
 
   async function handleEndReached() {
-    console.log("end reached. load more");
+    if (data.length < 1) {
+        return;
+    }
+
+    console.log("handle load more")
+    await onLoadMore();
   }
 
   return (

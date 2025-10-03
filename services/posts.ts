@@ -34,7 +34,7 @@ export class PostsService {
     const token = await SecureStoreService.getStoreToken();
 
     const request = await fetch(url, {
-      method: 'GET',
+      method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
       },

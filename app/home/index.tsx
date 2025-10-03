@@ -8,20 +8,28 @@ const POSTS_LIMIT = 10;
 
 export default function PostScreen() {
   const [data, setData] = useState<Post[]>([]);
+  const [page, setPage] = useState(1);
+
+  const postService = new PostsService();
 
   async function loadInitialData() {
     try {
-      const postService = new PostsService();
-      const initialData = await postService.getPosts(POSTS_LIMIT, 1);
+      const initialData = await postService.getPosts(POSTS_LIMIT, page);
+      console.log("initial data", initialData.posts.map(x => x.id))
       setData(initialData.posts);
     } catch (error) {
       console.log(error);
     }
   }
+
   const renderItem = useCallback(({ item }: { item: Post }) => {
     return (
       <Card mode="elevated">
-        <Card.Title title={item.title} titleNumberOfLines={2} titleVariant="titleLarge" />
+        <Card.Title
+          title={item.title}
+          titleNumberOfLines={2}
+          titleVariant="titleLarge"
+        />
         <Card.Content>
           <Text variant="bodyLarge">Postado por {item.author.name}</Text>
           <Text variant="bodyMedium">{item.description}</Text>
@@ -30,9 +38,16 @@ export default function PostScreen() {
     );
   }, []);
 
-  async function handleLoadMore() {
-    console.log("onLoadMore posts");
-  }
+  const handleLoadMore = useCallback(async () => {
+    try {
+      const newPage = page + 1;
+      const posts = await postService.getPosts(POSTS_LIMIT, newPage);
+      setData((prevData) => [...prevData, ...posts.posts]);
+      setPage(newPage);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [data, page]);
 
   useEffect(() => {
     loadInitialData();
