@@ -1,6 +1,6 @@
 import { InfiniteScroll } from "@/components/InfiniteScroll";
 import { Post, PostsService } from "@/services/posts";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 import { Card, Text } from "react-native-paper";
 
@@ -9,10 +9,18 @@ const POSTS_LIMIT = 10;
 export default function PostScreen() {
   const [data, setData] = useState<Post[]>([]);
   const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
+  const dataRef = useRef(data);
 
   const postService = new PostsService();
 
+  // Keep ref in sync with state
+  useEffect(() => {
+    dataRef.current = data;
+  }, [data]);
+
   async function loadInitialData() {
+    setIsLoading(true);
     try {
       const initialData = await postService.getPosts(POSTS_LIMIT, page);
       console.log("initial data", initialData.posts.map(x => x.id))
@@ -20,7 +28,21 @@ export default function PostScreen() {
     } catch (error) {
       console.log(error);
     }
+    setIsLoading(false);
   }
+
+  const onRefresh = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      setPage(1);
+      const initialData = await postService.getPosts(POSTS_LIMIT, 1);
+      console.log("refresh initial data", initialData.posts.map(x => x.id))
+      setData(initialData.posts);
+    } catch (error) {
+      console.log(error);
+    }
+    setIsLoading(false);
+  }, []);
 
   const renderItem = useCallback(({ item }: { item: Post }) => {
     return (
@@ -39,6 +61,11 @@ export default function PostScreen() {
   }, []);
 
   const handleLoadMore = useCallback(async () => {
+    if (dataRef.current.length < 1) {
+      return;
+    }
+    
+    setIsLoading(true);
     try {
       const newPage = page + 1;
       const posts = await postService.getPosts(POSTS_LIMIT, newPage);
@@ -47,7 +74,8 @@ export default function PostScreen() {
     } catch (error) {
       console.log(error);
     }
-  }, [data, page]);
+    setIsLoading(false);
+  }, [page]);
 
   useEffect(() => {
     loadInitialData();
@@ -60,6 +88,8 @@ export default function PostScreen() {
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         onLoadMore={handleLoadMore}
+        onRefresh={onRefresh}
+        isLoading={isLoading}
       />
     </View>
   );
