@@ -1,7 +1,8 @@
 import { InfiniteScroll } from "@/components/InfiniteScroll";
 import { Post, PostsService } from "@/services/posts";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
+  Animated,
   FlatList,
   NativeScrollEvent,
   NativeSyntheticEvent,
@@ -11,12 +12,33 @@ import { Card, Text } from "react-native-paper";
 
 const POSTS_LIMIT = 10;
 
+// Memoized PostCard component for better performance
+const PostCard = memo(({ item }: { item: Post }) => {
+  return (
+    <Card mode="elevated">
+      <Card.Title
+        title={item.title}
+        titleNumberOfLines={2}
+        titleVariant="titleLarge"
+      />
+      <Card.Content>
+        <Text variant="bodyLarge">Postado por {item.author.name}</Text>
+        <Text variant="bodyMedium">{item.description}</Text>
+      </Card.Content>
+    </Card>
+  );
+});
+
+PostCard.displayName = 'PostCard';
+
 export default function PostScreen() {
   const [data, setData] = useState<Post[]>([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
   const flatListRef = useRef<FlatList>(null);
+  const animBottomPosition = useRef(new Animated.Value(80)).current;
   const dataRef = useRef(data);
 
   const postService = new PostsService();
@@ -58,19 +80,7 @@ export default function PostScreen() {
   }, []);
 
   const renderItem = useCallback(({ item }: { item: Post }) => {
-    return (
-      <Card mode="elevated">
-        <Card.Title
-          title={item.title}
-          titleNumberOfLines={2}
-          titleVariant="titleLarge"
-        />
-        <Card.Content>
-          <Text variant="bodyLarge">Postado por {item.author.name}</Text>
-          <Text variant="bodyMedium">{item.description}</Text>
-        </Card.Content>
-      </Card>
-    );
+    return <PostCard item={item} />;
   }, []);
 
   const handleLoadMore = useCallback(async () => {
@@ -91,11 +101,24 @@ export default function PostScreen() {
   }, [page]);
 
   const onScroll = useCallback(
-    async (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
       const offsetY = event.nativeEvent.contentOffset.y;
-      setShowScrollTop(offsetY > 200);
+      const shouldShow = offsetY > 200;
+      
+      if (shouldShow !== showScrollTop && !isAnimating) {
+        setShowScrollTop(shouldShow);
+        setIsAnimating(true);
+        
+        Animated.timing(animBottomPosition, {
+          toValue: shouldShow ? 0 : 100,
+          duration: 300,
+          useNativeDriver: true,
+        }).start(() => {
+          setIsAnimating(false);
+        });
+      }
     },
-    [],
+    [showScrollTop, animBottomPosition, isAnimating],
   );
 
   const scrollToTop = useCallback(() => {
@@ -119,6 +142,7 @@ export default function PostScreen() {
         onScroll={onScroll}
         showScrollToTop={showScrollTop}
         onScrollToTop={scrollToTop}
+        scrollToTopBottomPosition={animBottomPosition}
       />
     </View>
   );
