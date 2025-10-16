@@ -1,9 +1,10 @@
-import { ScrollView, Text } from "react-native";
+import { FormContainer } from "@/components/FormContainer";
+import { Text } from "react-native";
 
 export default function CreatePostScreen() {
   return (
-    <ScrollView>
+    <FormContainer>
       <Text>dafd</Text>
-    </ScrollView>
+    </FormContainer>
   );
 }

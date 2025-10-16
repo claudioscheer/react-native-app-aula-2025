@@ -1,17 +1,10 @@
+import { FormContainer } from "@/components/FormContainer";
 import { LoginService } from "@/services/login";
 import { SecureStoreService } from "@/utils/secureStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useState } from "react";
-import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 
 export default function LoginScreen() {
@@ -42,45 +35,40 @@ export default function LoginScreen() {
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.content}>
-          <Text style={styles.title}>Login</Text>
-          <TextInput
-            label="Email"
-            mode="outlined"
-            value={email}
-            style={styles.input}
-            placeholder="Informe seu email"
-            autoCorrect={false}
-            keyboardType="email-address"
-            onChangeText={setEmail}
-          />
+    <FormContainer contentStyle={styles.content}>
+      <View style={styles.content}>
+        <Text style={styles.title}>Login</Text>
+        <TextInput
+          label="Email"
+          mode="outlined"
+          value={email}
+          style={styles.input}
+          placeholder="Informe seu email"
+          autoCorrect={false}
+          keyboardType="email-address"
+          onChangeText={setEmail}
+        />
 
-          <TextInput
-            label="Senha"
-            mode="outlined"
-            value={password}
-            style={styles.input}
-            placeholder="Informe sua senha"
-            autoCorrect={false}
-            secureTextEntry
-            onChangeText={(text) => setPassword(text)}
-          />
+        <TextInput
+          label="Senha"
+          mode="outlined"
+          value={password}
+          style={styles.input}
+          placeholder="Informe sua senha"
+          autoCorrect={false}
+          secureTextEntry
+          onChangeText={(text) => setPassword(text)}
+        />
 
-          <Button
-            style={styles.button}
-            mode="contained"
-            onPress={() => handleLogin()}
-          >
-            Login
-          </Button>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        <Button
+          style={styles.button}
+          mode="contained"
+          onPress={() => handleLogin()}
+        >
+          Login
+        </Button>
+      </View>
+    </FormContainer>
   );
 }
 
