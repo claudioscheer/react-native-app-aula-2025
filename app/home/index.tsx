@@ -6,6 +6,7 @@ import {
   FlatList,
   NativeScrollEvent,
   NativeSyntheticEvent,
+  StyleSheet,
   View,
 } from "react-native";
 import { Card, Text } from "react-native-paper";
@@ -15,21 +16,26 @@ const POSTS_LIMIT = 10;
 // Memoized PostCard component for better performance
 const PostCard = memo(({ item }: { item: Post }) => {
   return (
-    <Card mode="elevated">
+    <Card mode="elevated" style={styles.postContainer}>
       <Card.Title
+        titleStyle={styles.postTitle}
         title={item.title}
         titleNumberOfLines={2}
         titleVariant="titleLarge"
       />
-      <Card.Content>
-        <Text variant="bodyLarge">Postado por {item.author.name}</Text>
-        <Text variant="bodyMedium">{item.description}</Text>
+      <Card.Content style={styles.postContent}>
+        <Text variant="bodyLarge" style={styles.postDate}>
+          Postado por {item.author.name}
+        </Text>
+        <Text variant="bodyMedium" style={styles.postDescription}>
+          {item.description}
+        </Text>
       </Card.Content>
     </Card>
   );
 });
 
-PostCard.displayName = 'PostCard';
+PostCard.displayName = "PostCard";
 
 export default function PostScreen() {
   const [data, setData] = useState<Post[]>([]);
@@ -104,11 +110,11 @@ export default function PostScreen() {
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
       const offsetY = event.nativeEvent.contentOffset.y;
       const shouldShow = offsetY > 200;
-      
+
       if (shouldShow !== showScrollTop && !isAnimating) {
         setShowScrollTop(shouldShow);
         setIsAnimating(true);
-        
+
         Animated.timing(animBottomPosition, {
           toValue: shouldShow ? 0 : 100,
           duration: 300,
@@ -130,20 +136,45 @@ export default function PostScreen() {
   }, []);
 
   return (
-    <View>
-      <InfiniteScroll
-        ref={flatListRef}
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-        onLoadMore={handleLoadMore}
-        onRefresh={onRefresh}
-        isLoading={isLoading}
-        onScroll={onScroll}
-        showScrollToTop={showScrollTop}
-        onScrollToTop={scrollToTop}
-        scrollToTopBottomPosition={animBottomPosition}
-      />
+    <View style={styles.container}>
+      <View style={styles.content}>
+        <InfiniteScroll
+          ref={flatListRef}
+          data={data}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
+          onLoadMore={handleLoadMore}
+          onRefresh={onRefresh}
+          isLoading={isLoading}
+          onScroll={onScroll}
+          showScrollToTop={showScrollTop}
+          onScrollToTop={scrollToTop}
+          scrollToTopBottomPosition={animBottomPosition}
+        />
+      </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {},
+  content: {},
+  postDescription: {
+    textAlign: "justify",
+  },
+  postTitle: {
+    fontWeight: "bold",
+  },
+  postDate: {
+    marginBottom: 4,
+    fontWeight: "bold",
+    textAlign: "right",
+  },
+  postContent: {},
+  postContainer: {
+    padding: 8,
+    backgroundColor: "#DAB49D",
+    borderRadius: 32,
+    marginBottom: 16,
+  },
+});

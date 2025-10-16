@@ -1,9 +1,9 @@
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Drawer } from "expo-router/drawer";
-import { Button } from "react-native-paper";
-import { Alert } from "react-native";
 import { SecureStoreService } from "@/utils/secureStore";
 import { router } from "expo-router";
+import { Drawer } from "expo-router/drawer";
+import { Alert, StyleSheet, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Button } from "react-native-paper";
 
 export default function Layout() {
   async function logout() {
@@ -33,9 +33,14 @@ export default function Layout() {
             title: "Posts",
             headerRight: () => {
               return (
-                <Button icon="logout" mode="text" onPress={() => logout()}>
-                  Sair
-                </Button>
+                <View style={styles.postActions}>
+                  <Button icon="plus" mode="text" onPress={() => logout()}>
+                    Novo Post
+                  </Button>
+                  <Button icon="logout" mode="text" onPress={() => logout()}>
+                    Sair
+                  </Button>
+                </View>
               );
             },
           }}
@@ -52,3 +57,10 @@ export default function Layout() {
     </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  postActions: {
+    flexDirection: "row",
+    gap: 2,
+  },
+});

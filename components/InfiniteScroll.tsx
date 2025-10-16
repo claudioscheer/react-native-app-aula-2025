@@ -51,6 +51,7 @@ function InfiniteScrollComponent<T>(props: InfiniteScrollProps<T>) {
   return (
     <>
       <FlatList
+        style={{ padding: 8 }}
         ref={ref}
         data={data}
         renderItem={renderItem}
@@ -82,7 +83,9 @@ function InfiniteScrollComponent<T>(props: InfiniteScrollProps<T>) {
   );
 }
 
-export const InfiniteScroll = memo(InfiniteScrollComponent) as <T>(props: InfiniteScrollProps<T>) => React.JSX.Element;
+export const InfiniteScroll = memo(InfiniteScrollComponent) as <T>(
+  props: InfiniteScrollProps<T>,
+) => React.JSX.Element;
 
 const styles = StyleSheet.create({
   fab: {
