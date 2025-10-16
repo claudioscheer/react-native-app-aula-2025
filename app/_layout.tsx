@@ -1,8 +1,6 @@
-import { SecureStoreService } from "@/utils/secureStore";
-import { router, Stack } from "expo-router";
-import { Alert } from "react-native";
-import { Button, PaperProvider } from "react-native-paper";
+import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { PaperProvider } from "react-native-paper";
 
 export default function RootLayout() {
   return (
@@ -26,6 +24,12 @@ export default function RootLayout() {
           options={{
             title: "Home",
             headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="create-post"
+          options={{
+            headerTitle: "Novo Post",
           }}
         />
       </Stack>

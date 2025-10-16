@@ -34,7 +34,11 @@ export default function Layout() {
             headerRight: () => {
               return (
                 <View style={styles.postActions}>
-                  <Button icon="plus" mode="text" onPress={() => logout()}>
+                  <Button
+                    icon="plus"
+                    mode="text"
+                    onPress={() => router.push("/create-post")}
+                  >
                     Novo Post
                   </Button>
                   <Button icon="logout" mode="text" onPress={() => logout()}>
