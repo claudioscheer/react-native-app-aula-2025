@@ -1,7 +1,9 @@
 import { ErrorText } from "@/components/ErrorText";
 import { FormContainer } from "@/components/FormContainer";
+import { PostsService } from "@/services/posts";
+import { router } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
-import { StyleSheet } from "react-native";
+import { Alert, StyleSheet } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 
 type IFormInput = {
@@ -20,7 +22,19 @@ export default function CreatePostScreen() {
       description: "",
     },
   });
-  const onSubmit = (data: IFormInput) => console.log(data);
+
+  const onSubmit = async (data: IFormInput) => {
+    const postService = new PostsService();
+    try {
+      await postService.savePost(data);
+      router.back();
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        Alert.alert("Erro salvar post", error?.message);
+      }
+    }
+  };
 
   return (
     <FormContainer>

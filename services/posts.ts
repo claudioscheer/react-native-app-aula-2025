@@ -26,6 +26,11 @@ export type PostsResponseType = {
   };
 };
 
+export type PostRequest = {
+  title: string;
+  description: string;
+};
+
 export class PostsService {
   async getPosts(limit: number, page: number): Promise<PostsResponseType> {
     let url = `${API_HOST}/api/posts`;
@@ -41,6 +46,26 @@ export class PostsService {
     });
     if (!request.ok) {
       throw new Error("Error fetching posts");
+    }
+
+    const response = await request.json();
+    return response;
+  }
+
+  async savePost(post: PostRequest): Promise<PostsResponseType> {
+    let url = `${API_HOST}/api/posts`;
+
+    const token = await SecureStoreService.getStoreToken();
+
+    const request = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(post),
+    });
+    if (!request.ok) {
+      throw new Error("Error saving posts");
     }
 
     const response = await request.json();

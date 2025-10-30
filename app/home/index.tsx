@@ -1,5 +1,6 @@
 import { InfiniteScroll } from "@/components/InfiniteScroll";
 import { Post, PostsService } from "@/services/posts";
+import { useFocusEffect } from "expo-router";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -131,9 +132,11 @@ export default function PostScreen() {
     flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
   }, []);
 
-  useEffect(() => {
-    loadInitialData();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadInitialData();
+    }, []),
+  );
 
   return (
     <View style={styles.container}>
